@@ -3,11 +3,11 @@
 pkgname=mesa-pvr-vf2-vk
 pkgdesc="an open-source implementation of the OpenGL specification, PowerVR (VisionFive2) version"
 pkgver=22.1.7
-pkgrel=4
+pkgrel=5
 arch=('riscv64')
 makedepends=('git' 'python-mako' 'xorgproto'
               'libxml2' 'libx11'  'libvdpau' 'libva' 'elfutils' 'libxrandr'
-              'wayland-protocols' 'meson' 'ninja' 'glslang' )
+              'wayland-protocols' 'meson' 'ninja' 'glslang' 'valgrind')
 depends=('libdrm' 'libxxf86vm' 'libxdamage' 'libxshmfence' 'libelf'
          'libunwind' 'wayland' 'zstd' 'expat' 'libglvnd' 'vulkan-icd-loader')
 optdepends=('opengl-man-pages: for the OpenGL API man pages')
@@ -169,6 +169,8 @@ prepare() {
 }
 
 build () {
+    CFLAGS+=" -I/usr/include/valgrind"
+    CXXFLAGS+=" -I/usr/include/valgrind"
     meson setup "mesa-${pkgver}" _build \
        -Dshared-glapi=enabled \
        -Dglx-read-only-text=true \
@@ -197,8 +199,8 @@ build () {
        -Dglvnd=true \
        -Dprefix=/usr \
        -Dsysconfdir=/etc \
-       -Dvalgrind=disabled \
-       -Dbuildtype=release
+       -Dvalgrind=enabled \
+       -Dbuildtype=debugoptimized
        
     meson configure --no-pager _build
     
