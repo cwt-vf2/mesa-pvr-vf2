@@ -1,6 +1,6 @@
 # Maintainer: Paul Sajna <hello@paulsajna.com>
 
-pkgname=mesa-pvr-vf2
+pkgname=mesa-pvr-vf2-vk
 pkgdesc="an open-source implementation of the OpenGL specification, PowerVR (VisionFive2) version"
 pkgver=22.1.7
 pkgrel=4
@@ -9,10 +9,10 @@ makedepends=('git' 'python-mako' 'xorgproto'
               'libxml2' 'libx11'  'libvdpau' 'libva' 'elfutils' 'libxrandr'
               'wayland-protocols' 'meson' 'ninja' 'glslang' )
 depends=('libdrm' 'libxxf86vm' 'libxdamage' 'libxshmfence' 'libelf'
-         'libunwind' 'wayland' 'zstd' 'expat' 'libglvnd')
+         'libunwind' 'wayland' 'zstd' 'expat' 'libglvnd' 'vulkan-icd-loader')
 optdepends=('opengl-man-pages: for the OpenGL API man pages')
-provides=('mesa' 'mesa-libgl' 'opengl-driver')
-conflicts=('mesa' 'mesa-libgl')
+provides=('mesa-pvr-vf2' 'mesa' 'vulkan-mesa-layer' 'vulkan-driver' 'mesa-libgl' 'opengl-driver')
+conflicts=('mesa-pvr-vf2' 'mesa' 'vulkan-mesa-layer' 'mesa-libgl')
 url="https://www.mesa3d.org"
 license=('custom')
 source=("https://mesa.freedesktop.org/archive/mesa-${pkgver}.tar.xz"
@@ -173,11 +173,11 @@ build () {
        -Dshared-glapi=enabled \
        -Dglx-read-only-text=true \
        -Dplatforms='wayland,x11' \
-       -Dgles1=disabled \
+       -Dgles1=enabled \
        -Dgles2=enabled \
-       -Ddri3=disabled \
+       -Ddri3=enabled \
        -Degl=enabled \
-       -Dgallium-drivers=swrast,pvr \
+       -Dgallium-drivers=pvr,swrast,zink \
        -Dllvm=disabled \
        -Dgbm=enabled \
        -Dlmsensors=disabled \
@@ -189,12 +189,14 @@ build () {
        -Dlibunwind=disabled \
        -Dgallium-va=disabled \
        -Dgallium-vdpau=disabled \
-       -Dvulkan-drivers='' \
+       -Dvulkan-drivers=pvr \
+       -Dvulkan-layers=device-select,overlay \
        -Dgallium-xa=disabled \
        -Dgallium-xvmc=disabled \
        -Dglvnd=true \
        -Dprefix=/usr \
        -Dsysconfdir=/etc \
+       -Dvalgrind=disabled \
        -Dbuildtype=release
        
     meson configure --no-pager _build
