@@ -193,8 +193,9 @@ build () {
        -Dgallium-xa=disabled \
        -Dgallium-xvmc=disabled \
        -Dglvnd=true \
-       -D prefix=/usr \
-       -D sysconfdir=/etc \
+       -Dprefix=/usr \
+       -Dsysconfdir=/etc \
+       -Dbuildtype=release
        
     meson configure --no-pager _build
     
