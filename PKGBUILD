@@ -186,6 +186,7 @@ build () {
        -Dopengl=true \
        -Dosmesa=false \
        -Dperfetto=false \
+       -Dglx=dri \
        -Dlibunwind=disabled \
        -Dgallium-va=disabled \
        -Dgallium-vdpau=disabled \
